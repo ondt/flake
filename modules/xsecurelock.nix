@@ -13,7 +13,7 @@ let cfg = config.services.xsecurelock; in {
 			description = "Whether to show local date and time on the login.";
 		};
 		datetimeFormat = mkOption {
-			default = "%%c";
+			default = "%c";
 			example = "%a %d %b %Y %T %Z";
 			type = types.str;
 			description = "The date format to show. Defaults to the locale settings. See `man date` for possible formats.";
@@ -60,7 +60,7 @@ let cfg = config.services.xsecurelock; in {
 
 		systemd.user.services.xss-lock.environment = {
 			XSECURELOCK_SHOW_DATETIME = if cfg.showDatetime then "1" else "0";
-			XSECURELOCK_DATETIME_FORMAT = toString cfg.datetimeFormat;
+			XSECURELOCK_DATETIME_FORMAT = builtins.replaceStrings ["%"] ["%%"] cfg.datetimeFormat;
 			XSECURELOCK_AUTH_TIMEOUT = toString cfg.authTimeout;
 			XSECURELOCK_DIM_TIME_MS = toString cfg.dimTimeMs;
 			XSECURELOCK_WAIT_TIME_MS = toString cfg.waitTimeMs;
